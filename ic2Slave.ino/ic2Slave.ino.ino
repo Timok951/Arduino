@@ -5,12 +5,14 @@ const unsigned long period = 5000;
 unsigned long currentMillis;  
 unsigned long previousMillis = 0; 
 int x = 0;
+int y = 0;
 
 void setup() {
   pinMode(LED, OUTPUT);
   
   Wire.begin(IC2);
   Wire.onReceive(reciveEvent);
+  Wire.onRequest(requestEvent);
   Serial.begin(9600);
 
 }
@@ -23,19 +25,27 @@ void reciveEvent(int bytes){
   }
 }
 
+
+void requestEvent() {
+  Wire.write(y);  // Отправляем данные мастеру (в данном случае просто переменную x)
+  Serial.println("Message was send start" + y);
+
+}
+
+
 void loop() {
   currentMillis = millis();
   if (brightness > 0){
     Serial.println(x);
     if(currentMillis - previousMillis >= period){
-      Wire.beginTransmission(IC2); 
-      Wire.write(1);  
-      Serial.println("Message was sent start");  // Отладка
-      Wire.endTransmission();
-      Serial.println("Message was send start");
+      y = 1;
       previousMillis  = currentMillis;
-      delay(1000);
     }
+
+  }
+  else{
+    y = 0;
+    previousMillis  = currentMillis;
 
   }
 

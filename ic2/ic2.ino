@@ -105,10 +105,8 @@ void setup() {
   pinMode(POT, INPUT);
   pinMode(M, OUTPUT);
   Serial.begin(9600);
-  Wire.begin();
-  
+  Wire.begin(); 
 }
-
 
 
 void MelodyPlay(){
@@ -120,16 +118,15 @@ void MelodyPlay(){
                 x = 0;
 
   } else{
-    
+          noTone(M);
   }
 } 
 
 
 
-
 void loop() {
-  Wire.requestFrom(1, 1);
-  if (Wire.available()){
+  Wire.requestFrom(IC2, 1);
+  while (Wire.available()){
     x = Wire.read();
     Serial.println(x);
   }
@@ -138,5 +135,7 @@ void loop() {
   Wire.beginTransmission(IC2);
   Wire.write(pot);
   Wire.endTransmission();
+  Serial.println(x);
+  MelodyPlay();
   delay(100);
 }
